@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up — RecordHow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #ffffff;
+            --bg-gray: #f9fafb;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 440px;
+            overflow: hidden;
+        }
+
+        .auth-header {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border);
+            margin: 0 2rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .auth-content {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .password-hint {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1.5rem 0;
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        .social-btns {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-social {
+            flex: 1;
+            padding: 0.875rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-social:hover {
+            border-color: var(--primary);
+            background: var(--bg-gray);
+        }
+
+        .back-link {
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .back-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.875rem;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: 400;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                border-radius: 0;
+            }
+
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="logo">RecordHow</div>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="tab active" data-tab="login">Login</button>
+            <button class="tab" data-tab="signup">Sign Up</button>
+        </div>
+
+        <div class="auth-content">
+            <div class="error-message" id="error-message"></div>
+
+            <!-- Login Form -->
+            <div class="form-section active" id="login-form">
+                <form id="login">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Login</button>
+                </form>
+
+                <div class="divider">
+                    <span>or continue with</span>
+                </div>
+
+                <div class="social-btns">
+                    <button class="btn-social" id="google-login">
+                        <span>🔍</span> Google
+                    </button>
+                    <button class="btn-social" id="github-login">
+                        <span>⚡</span> GitHub
+                    </button>
+                </div>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="form-section" id="signup-form">
+                <form id="signup">
+                    <div class="form-group">
+                        <label for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" required minlength="8">
+                        <div class="password-hint">At least 8 characters</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-confirm">Confirm Password</label>
+                        <input type="password" id="signup-confirm" required>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">I agree to the Terms and Privacy Policy</label>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Create Account</button>
+                </form>
+
+                <div class="divider">
+                    <span>or sign up with</span>
+                </div>
+
+                <div class="social-btns">
+                    <button class="btn-social" id="google-signup">
+                        <span>🔍</span> Google
+                    </button>
+                    <button class="btn-social" id="github-signup">
+                        <span>⚡</span> GitHub
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://api.recordhow.com';
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.dataset.tab;
+
+                // Update active tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update active form
+                document.querySelectorAll('.form-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(`${targetTab}-form`).classList.add('active');
+
+                // Clear error message
+                hideError();
+            });
+        });
+
+        // Login form submission
+        document.getElementById('login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const submitBtn = e.target.querySelector('.btn-submit');
+
+            // Show loading state
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="spinner"></span> Logging in...';
+            submitBtn.classList.add('loading');
+            hideError();
+
+            try {
+                const response = await fetch(`${API_BASE}/v1/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Login failed');
+                }
+
+                // Store auth data
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('userId', data.user.id);
+                localStorage.setItem('userEmail', data.user.email);
+                localStorage.setItem('userName', data.user.email.split('@')[0]);
+                localStorage.setItem('isAuthenticated', 'true');
+
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                showError(error.message || 'Invalid credentials');
+                submitBtn.innerHTML = originalText;
+                submitBtn.classList.remove('loading');
+            }
+        });
+
+        // Signup form submission
+        document.getElementById('signup').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm').value;
+            const submitBtn = e.target.querySelector('.btn-submit');
+
+            // Validation
+            if (password !== confirm) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters');
+                return;
+            }
+
+            // Show loading state
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="spinner"></span> Creating account...';
+            submitBtn.classList.add('loading');
+            hideError();
+
+            try {
+                const response = await fetch(`${API_BASE}/v1/auth/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Signup failed');
+                }
+
+                // Store auth data
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('userId', data.user.id);
+                localStorage.setItem('userEmail', data.user.email);
+                localStorage.setItem('userName', name);
+                localStorage.setItem('isAuthenticated', 'true');
+
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                showError(error.message || 'Signup failed');
+                submitBtn.innerHTML = originalText;
+                submitBtn.classList.remove('loading');
+            }
+        });
+
+        // Social login buttons (disabled for now)
+        document.querySelectorAll('.btn-social').forEach(btn => {
+            btn.addEventListener('click', () => {
+                showError('Social login coming soon! Please use email/password.');
+            });
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error-message').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

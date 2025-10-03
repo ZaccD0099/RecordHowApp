@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecordHow — Turn workflows into guides, or let AI do it for you</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #ffffff;
+            --bg-gray: #f9fafb;
+            --border: #e5e7eb;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            background: var(--bg);
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-cta {
+            background: var(--primary);
+            color: white;
+            padding: 0.625rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .nav-cta:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .nav-login {
+            color: var(--text);
+            padding: 0.625rem 1.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .nav-login:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 2rem 4rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subhead {
+            font-size: 1.375rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.125rem;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            padding: 1rem 2.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.125rem;
+            border: 2px solid var(--border);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Browser Demo */
+        .browser-demo {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .browser-header {
+            background: var(--bg-gray);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .browser-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+
+        .browser-dot:nth-child(2) { background: #fbbf24; }
+        .browser-dot:nth-child(3) { background: #10b981; }
+
+        .browser-content {
+            padding: 2rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .step:hover {
+            background: var(--bg-gray);
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            flex: 1;
+        }
+
+        .step-action {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-detail {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        /* Trust Strip */
+        .trust-strip {
+            background: var(--bg-gray);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .trust-text {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+        }
+
+        .trust-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            opacity: 0.4;
+        }
+
+        .trust-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* Value Props */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.375rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-text {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            background: var(--bg-gray);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .process-step {
+            text-align: center;
+        }
+
+        .process-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+
+        .process-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .process-text {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        /* Audience Section */
+        .audience-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .tag {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        /* Security Section */
+        .security {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: white;
+        }
+
+        .security .section-title {
+            color: white;
+        }
+
+        .security .section-subtitle {
+            color: #9ca3af;
+        }
+
+        .security .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .security .card-title {
+            color: white;
+        }
+
+        .security .card-text {
+            color: #d1d5db;
+        }
+
+        /* FAQ */
+        .faq-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 1.5rem;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .faq-question:hover {
+            color: var(--primary);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--text-light);
+            display: none;
+            line-height: 1.7;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-icon {
+            transition: transform 0.2s;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Email Capture */
+        .email-section {
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .email-section .section-title {
+            color: white;
+        }
+
+        .email-section .section-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .email-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .email-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .email-submit {
+            padding: 1rem 2.5rem;
+            background: #1f2937;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .email-submit:hover {
+            background: #111827;
+            transform: translateY(-2px);
+        }
+
+        .success-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 8px;
+            display: none;
+        }
+
+        /* Footer */
+        footer {
+            background: #1f2937;
+            color: #d1d5db;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subhead {
+                font-size: 1.125rem;
+            }
+
+            .hero {
+                padding: 4rem 1.5rem 3rem;
+            }
+
+            .section {
+                padding: 3rem 1.5rem;
+            }
+
+            .email-form {
+                flex-direction: column;
+            }
+
+            .email-input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="#" class="logo">RecordHow</a>
+            <div class="nav-right">
+                <a href="auth.html" class="nav-login" id="auth-link">Login</a>
+                <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Turn any workflow into a step-by-step guide — or let AI do it for you.</h1>
+            <p class="subhead">Record your clicks and keystrokes into beautiful docs you can share instantly. Then let AI run the process on demand.</p>
+
+            <div class="hero-ctas">
+                <a href="#waitlist" class="btn-primary">Join the Waitlist</a>
+                <a href="#how-it-works" class="btn-secondary">See How It Works</a>
+            </div>
+
+            <!-- Browser Demo -->
+            <div class="browser-demo">
+                <div class="browser-header">
+                    <div class="browser-dot"></div>
+                    <div class="browser-dot"></div>
+                    <div class="browser-dot"></div>
+                </div>
+                <div class="browser-content">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">
+                            <div class="step-action">Click "Settings"</div>
+                            <div class="step-detail">Navigate to account settings panel</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">
+                            <div class="step-action">Type "Billing Email"</div>
+                            <div class="step-detail">Enter your billing email address</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">
+                            <div class="step-action">Click "Save"</div>
+                            <div class="step-detail">Confirm changes and update profile</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Strip -->
+        <section class="trust-strip">
+            <div class="trust-text">Trusted by teams at</div>
+            <div class="trust-logos">
+                <div class="trust-logo">Acme Corp</div>
+                <div class="trust-logo">TechStart</div>
+                <div class="trust-logo">CloudBase</div>
+                <div class="trust-logo">DataFlow</div>
+                <div class="trust-logo">BuildIt</div>
+            </div>
+        </section>
+
+        <!-- Value Propositions -->
+        <section class="section">
+            <h2 class="section-title">Everything you need to document and automate</h2>
+            <p class="section-subtitle">Built for teams who value speed, clarity, and trust</p>
+
+            <div class="cards">
+                <div class="card">
+                    <div class="card-icon">📝</div>
+                    <h3 class="card-title">Instant Documentation</h3>
+                    <p class="card-text">Capture workflows effortlessly with clear steps and screenshots. No more writing docs manually.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🤖</div>
+                    <h3 class="card-title">AI Execution</h3>
+                    <p class="card-text">Transform guides into runnable tasks handled by an AI agent. Automate repetitive processes on demand.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔒</div>
+                    <h3 class="card-title">Privacy Built-In</h3>
+                    <p class="card-text">Sensitive data is automatically blurred or redacted before sharing. Your security is our priority.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔗</div>
+                    <h3 class="card-title">Flexible Sharing</h3>
+                    <p class="card-text">Export guides to links, PDFs, or embed them anywhere. Share knowledge the way your team works.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="section how-it-works" id="how-it-works">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">From recording to automation in three simple steps</p>
+
+            <div class="steps-grid">
+                <div class="process-step">
+                    <div class="process-number">1</div>
+                    <h3 class="process-title">Record Your Workflow</h3>
+                    <p class="process-text">Start recording and perform your task as usual. RecordHow captures every click, keystroke, and screenshot automatically.</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-number">2</div>
+                    <h3 class="process-title">Polish the Steps</h3>
+                    <p class="process-text">Review the auto-generated guide. Edit descriptions, blur sensitive info, and customize to perfection in seconds.</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-number">3</div>
+                    <h3 class="process-title">Run with AI</h3>
+                    <p class="process-text">Share the guide with your team or let AI execute the process automatically whenever you need it done.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Audience -->
+        <section class="section">
+            <h2 class="section-title">Built for modern teams</h2>
+            <p class="section-subtitle">From operations to onboarding, RecordHow adapts to your workflow</p>
+
+            <div class="audience-tags">
+                <div class="tag">Ops Teams</div>
+                <div class="tag">Customer Support</div>
+                <div class="tag">RevOps</div>
+                <div class="tag">Product Managers</div>
+                <div class="tag">Training & Onboarding</div>
+            </div>
+        </section>
+
+        <!-- Security -->
+        <section class="section security">
+            <h2 class="section-title">Enterprise-grade security</h2>
+            <p class="section-subtitle">Built with the security and compliance your team needs</p>
+
+            <div class="cards">
+                <div class="card">
+                    <div class="card-icon">👥</div>
+                    <h3 class="card-title">Role-Based Access</h3>
+                    <p class="card-text">Control who can view, edit, and run your workflows with granular permissions.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔐</div>
+                    <h3 class="card-title">SSO Integration</h3>
+                    <p class="card-text">Seamlessly integrate with your existing identity provider for secure authentication.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Audit Logs</h3>
+                    <p class="card-text">Track every action with comprehensive audit logs for compliance and accountability.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="section">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-subtitle">Everything you need to know about RecordHow</p>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How is RecordHow different from Scribe?
+                        <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        While both tools create step-by-step guides, RecordHow takes it further by allowing AI to execute those workflows automatically. You can document once and then automate repetitive tasks on demand, saving even more time.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Is my data safe and private?
+                        <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        Absolutely. RecordHow automatically detects and blurs sensitive information before any guide is shared. We use enterprise-grade encryption, and you maintain full control over what data is captured and shared.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Which tools and platforms does RecordHow work with?
+                        <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        RecordHow works with any web-based application and most desktop software. Whether you're using Salesforce, Zendesk, internal tools, or custom applications, RecordHow captures it all.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How do AI permissions work?
+                        <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        You have complete control over AI execution. Set permissions at the workflow level to determine who can run automated tasks, and AI will only act within the boundaries you define. You can review and approve actions before they're executed.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        What's the pricing?
+                        <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        We're currently in beta and finalizing pricing tiers. Join the waitlist to be among the first to access special launch pricing and early-bird discounts.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Email Capture Section -->
+        <section class="section email-section" id="waitlist">
+            <h2 class="section-title">Join the Waitlist</h2>
+            <p class="section-subtitle">Be the first to experience the future of workflow documentation and automation</p>
+
+            <form class="email-form" id="waitlist-form">
+                <input
+                    type="email"
+                    class="email-input"
+                    placeholder="Enter your email"
+                    required
+                    id="email-input"
+                >
+                <button type="submit" class="email-submit">Join Waitlist</button>
+            </form>
+            <div class="success-message" id="success-message">
+                ✓ Thanks! You're on the list. We'll be in touch soon.
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link">Contact</a>
+        </div>
+        <p>&copy; 2025 RecordHow. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const faqItem = button.parentElement;
+                const isActive = faqItem.classList.contains('active');
+
+                // Close all FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Open clicked item if it wasn't active
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                }
+            });
+        });
+
+        // Email Form Submission
+        document.getElementById('waitlist-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email-input').value;
+
+            // Here you would typically send to your backend/email service
+            console.log('Email submitted:', email);
+
+            // Show success message
+            document.getElementById('success-message').style.display = 'block';
+            document.getElementById('email-input').value = '';
+
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                document.getElementById('success-message').style.display = 'none';
+            }, 5000);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Check if user is logged in and update header
+        function updateAuthLink() {
+            const authLink = document.getElementById('auth-link');
+            if (localStorage.getItem('isAuthenticated')) {
+                authLink.textContent = 'Dashboard';
+                authLink.href = 'dashboard.html';
+            }
+        }
+
+        updateAuthLink();
+    </script>
+</body>
+</html>
